@@ -15,7 +15,7 @@
 To use `prep` in your build process, install it as a binary executable:
 
 ```bash
-go install github.com/pijng/prep@latest
+go install github.com/pijng/prep/cmd/prep@latest
 ```
 
 ### 2. Add `prep` as a dependency
