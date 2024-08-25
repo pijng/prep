@@ -52,13 +52,13 @@ func fibonacci(n int) int {
   fmt.Printf("calculating fibonacci for %d\n", n)
 
   if n <= 1 {
-		return n
-	}
-	a, b := 0, 1
-	for i := 2; i <= n; i++ {
-		a, b = b, a+b
-	}
-	return b
+    return n
+  }
+  a, b := 0, 1
+  for i := 2; i <= n; i++ {
+    a, b = b, a+b
+  }
+  return b
 }
 ```
 
