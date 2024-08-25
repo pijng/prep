@@ -43,7 +43,7 @@ import (
 
 func main() {
   // This will be evaluated at compile-time
-  result := prep.Comptime(fibonacci(9999999))
+  result := prep.Comptime(fibonacci(45))
 
   fmt.Println("Result:", result)
 }
