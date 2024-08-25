@@ -43,7 +43,7 @@ import (
 
 func main() {
   // This will be evaluated at compile-time
-  result := prep.Comptime(fibonacci(45))
+  result := prep.Comptime(fibonacci(300))
 
   fmt.Println("Result:", result)
 }
@@ -52,9 +52,13 @@ func fibonacci(n int) int {
   fmt.Printf("calculating fibonacci for %d\n", n)
 
   if n <= 1 {
-    return n
-  }
-  return fibonacci(n-1) + fibonacci(n-2)
+		return n
+	}
+	a, b := 0, 1
+	for i := 2; i <= n; i++ {
+		a, b = b, a+b
+	}
+	return b
 }
 ```
 
