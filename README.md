@@ -87,6 +87,7 @@ Note the speed and absence of `calculating fibonacci for %d` message.
 ## Limitations
 
 **Basic Literals Only**
+
 Currently, `prep.Comptime` only supports basic literals as arguments. Which means you can either:
 
   1. Pass a basic literal directly like this:
@@ -107,6 +108,7 @@ Currently, `prep.Comptime` only supports basic literals as arguments. Which mean
   ```
 
 **Compile-Time Evaluation**
+
 Only functions that can be fully resolved with the provided literal arguments can be evaluated at compile-time, therefore it is impossible to use any values from IO operations.
 
 ## Motivation
