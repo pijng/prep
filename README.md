@@ -49,6 +49,8 @@ func main() {
 }
 
 func fibonacci(n int) int {
+  fmt.Printf("calculating fibonacci for %d\n", n)
+
   if n <= 1 {
     return n
   }
@@ -75,6 +77,8 @@ This command will evaluate all functions wrapped with `prep.Comptime` and replac
 ```bash
 ./main
 ```
+
+Note the speed and absence of `calculating fibonacci for %d` message.
 
 ## Limitations
 
