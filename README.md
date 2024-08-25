@@ -86,8 +86,28 @@ Note the speed and absence of `calculating fibonacci for %d` message.
 
 ## Limitations
 
-* Basic Literals Only: Currently, `prep.Comptime` only supports basic literals as arguments. This means you cannot pass variables to the functions that are wrapped with `prep.Comptime`.
-* Compile-Time Evaluation: Only functions that can be fully resolved with the provided literal arguments will be evaluated at compile-time.
+**Basic Literals Only**
+Currently, `prep.Comptime` only supports basic literals as arguments. Which means you can either:
+
+  1. Pass a basic literal directly like this:
+  ```go
+  func job() {
+    prep.Comptime(myFunc(1))
+  }
+  ```
+
+  2. Use a variable with the value of basic literal from the same scope as wrapped function:
+
+  ```go
+  func job() {
+    x := 1
+    y := 2
+    prep.Comptime(myFunc(x, y))
+  }
+  ```
+
+**Compile-Time Evaluation**
+Only functions that can be fully resolved with the provided literal arguments can be evaluated at compile-time, therefore it is impossible to use any values from IO operations.
 
 ## Motivation
 
