@@ -38,7 +38,6 @@ func main() {
 func (cmpm *ComptimeModifier) Modify(f *dst.File, dec *decorator.Decorator, res *decorator.Restorer) *dst.File {
 	funcs := collectFuncs(f, res)
 	vars := collectVars(f)
-	fmt.Println(vars)
 
 	var parentFunc string
 	dstutil.Apply(f, func(c *dstutil.Cursor) bool {
