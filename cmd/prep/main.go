@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"go/token"
+	"math"
 	"strings"
 
 	"github.com/dave/dst"
@@ -37,6 +38,7 @@ func main() {
 func (cmpm *ComptimeModifier) Modify(f *dst.File, dec *decorator.Decorator, res *decorator.Restorer) *dst.File {
 	funcs := collectFuncs(f, res)
 	vars := collectVars(f)
+	fmt.Println(vars)
 
 	var parentFunc string
 	dstutil.Apply(f, func(c *dstutil.Cursor) bool {
@@ -177,6 +179,11 @@ func collectVars(f *dst.File) map[string]string {
 			ident, ok := lhs.(*dst.Ident)
 			if !ok {
 				continue
+			}
+
+			if len(assignStmt.Lhs) != len(assignStmt.Rhs) {
+				op := float64(len(assignStmt.Rhs)) / float64(len(assignStmt.Lhs))
+				idx = int(math.Floor(op))
 			}
 
 			rhs := assignStmt.Rhs[idx]
