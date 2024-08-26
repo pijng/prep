@@ -18,6 +18,8 @@ import (
 const PrepPrefix = "prep_"
 const PrepPath = "github.com/pijng/prep"
 const ComptimeName = "Comptime"
+const FuncsPath = "funcs"
+const VarsPath = "vars"
 
 type ComptimeModifier struct {
 	intr *interp.Interpreter
@@ -36,8 +38,15 @@ func main() {
 }
 
 func (cmpm *ComptimeModifier) Modify(f *dst.File, dec *decorator.Decorator, res *decorator.Restorer) *dst.File {
-	funcs := collectFuncs(f, res)
-	vars := collectVars(f)
+	newFuncs := collectFuncs(f, res)
+	existingFuncs := Restore(FuncsPath)
+	funcs := Merge(existingFuncs, newFuncs)
+	Dump(funcs, FuncsPath)
+
+	newVars := collectVars(f)
+	existingVars := Restore(VarsPath)
+	vars := Merge(existingVars, newVars)
+	Dump(vars, VarsPath)
 
 	var parentFunc string
 	dstutil.Apply(f, func(c *dstutil.Cursor) bool {
@@ -121,6 +130,10 @@ func (cmpm *ComptimeModifier) Modify(f *dst.File, dec *decorator.Decorator, res 
 		}
 
 		typeName := strings.ToUpper(res.Type().Name())
+		if typeName == "" {
+			panic(fmt.Sprintf("cannot use '%s' as return type of '%s(%v)' call at comptime", res.Type(), funcToCall, argsStr))
+		}
+
 		tokenValue := token.Lookup(typeName)
 		lit := &dst.BasicLit{Kind: tokenValue, Value: fmt.Sprint(res.Interface())}
 
