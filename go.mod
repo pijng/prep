@@ -4,8 +4,8 @@ go 1.23.0
 
 require (
 	github.com/dave/dst v0.27.3
-	github.com/pijng/goinject v0.0.18
-	github.com/traefik/yaegi v0.16.1
+	github.com/pijng/goinject v0.0.19
+	github.com/pijng/yaegi v0.0.5
 )
 
 require (

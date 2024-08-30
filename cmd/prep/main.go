@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"go/build"
 	"go/token"
 	"math"
 	"strings"
@@ -11,8 +12,8 @@ import (
 	"github.com/dave/dst/decorator"
 	"github.com/dave/dst/dstutil"
 	"github.com/pijng/goinject"
-	"github.com/traefik/yaegi/interp"
-	"github.com/traefik/yaegi/stdlib"
+	"github.com/pijng/yaegi/interp"
+	"github.com/pijng/yaegi/stdlib"
 )
 
 const PrepPrefix = "prep_"
@@ -26,7 +27,7 @@ type ComptimeModifier struct {
 }
 
 func main() {
-	intr := interp.New(interp.Options{})
+	intr := interp.New(interp.Options{GoPath: build.Default.GOPATH})
 	err := intr.Use(stdlib.Symbols)
 	if err != nil {
 		panic(err)
@@ -135,7 +136,7 @@ func (cmpm *ComptimeModifier) Modify(f *dst.File, dec *decorator.Decorator, res 
 		}
 
 		tokenValue := token.Lookup(typeName)
-		lit := &dst.BasicLit{Kind: tokenValue, Value: fmt.Sprint(res.Interface())}
+		lit := &dst.BasicLit{Kind: tokenValue, Value: fmt.Sprintf("%q", res.Interface())}
 
 		c.Replace(lit)
 
