@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/dave/dst v0.27.3
-	github.com/pijng/goinject v0.0.19
+	github.com/pijng/goinject v0.0.23
 	github.com/pijng/yaegi v0.0.6
 )
 
