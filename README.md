@@ -82,9 +82,9 @@ Note the speed and absence of `calculating fibonacci for %d` message.
 
 ## Limitations
 
-**Basic Literals Only**
+**Basic Literal Arguments**
 
-Currently, `prep.Comptime` only supports basic literals as arguments. Which means you can either:
+At it's core, `prep.Comptime` allows you to provide basic literals (e.g., strings, integers, floats) as arguments. Which means you can either:
 
   1. Pass a basic literal directly like this:
   ```go
@@ -103,9 +103,28 @@ Currently, `prep.Comptime` only supports basic literals as arguments. Which mean
   }
   ```
 
-**Compile-Time Evaluation**
+These literals are evaluated directly at compile-time
 
-Only functions that can be fully resolved with the provided literal arguments can be evaluated at compile-time, therefore it is impossible to use any values from IO operations.
+**Compile-Time Evaluation (Experimental)**
+
+Additionally, `prep.Comptime` also supports evaluation during compilation when you can use values from IO operations, for example:
+
+  ```go
+  func main() {
+    config := prep.Comptime(readFile("./test.txt"))
+    fmt.Println(config)
+  }
+
+  func readFile(path string) string {
+    content, _ := os.ReadFile(path)
+
+    return string(content)
+  }
+  ```
+
+This way the `prep` will call `readFile` function as part of compilation step and include it's result to the final binary. This means you can remove the `test.txt` file after compilation, and still be able to execute the binary as if it exists.
+
+Note that this feature is somewhat experimental and prone to errors.
 
 ## Motivation
 
