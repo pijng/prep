@@ -21,6 +21,7 @@ const PrepPath = "github.com/pijng/prep"
 const ComptimeName = "Comptime"
 const FuncsPath = "funcs"
 const VarsPath = "vars"
+const ConstPath = "consts"
 
 type ComptimeModifier struct {
 	intr *interp.Interpreter
@@ -48,6 +49,11 @@ func (cmpm *ComptimeModifier) Modify(f *dst.File, dec *decorator.Decorator, res 
 	existingVars := Restore(VarsPath)
 	vars := Merge(existingVars, newVars)
 	Dump(vars, VarsPath)
+
+	newConsts := collectConsts(f)
+	existingConsts := Restore(ConstPath)
+	consts := Merge(existingConsts, newConsts)
+	Dump(consts, ConstPath)
 
 	var parentFunc string
 	dstutil.Apply(f, func(c *dstutil.Cursor) bool {
@@ -118,6 +124,16 @@ func (cmpm *ComptimeModifier) Modify(f *dst.File, dec *decorator.Decorator, res 
 		if !ok {
 			panic(fmt.Sprintf("cannot find func '%s' to eval", funcToCall))
 		}
+
+		var sb strings.Builder
+		for scopedName, lit := range consts {
+			name := strings.TrimPrefix(scopedName, f.Name.String()+"_")
+			sb.WriteString(fmt.Sprintf("const %s = %s\n", name, lit))
+		}
+		constStr := sb.String()
+
+		funcIndex := strings.Index(fn, "func")
+		fn = fn[:funcIndex] + constStr + fn[funcIndex:]
 
 		_, err := cmpm.intr.Eval(fn)
 		if err != nil {
@@ -213,4 +229,36 @@ func collectVars(f *dst.File) map[string]string {
 	}, nil)
 
 	return vars
+}
+
+func collectConsts(f *dst.File) map[string]string {
+	consts := make(map[string]string)
+
+	for _, decl := range f.Decls {
+		genDecl, ok := decl.(*dst.GenDecl)
+		if !ok {
+			continue
+		}
+		if genDecl.Tok != token.CONST {
+			continue
+		}
+		for _, spec := range genDecl.Specs {
+			constSpec, ok := spec.(*dst.ValueSpec)
+			if !ok {
+				continue
+			}
+			for i, expr := range constSpec.Values {
+				lit, ok := expr.(*dst.BasicLit)
+				if !ok {
+					continue
+				}
+				name := constSpec.Names[i].Name
+				pkgName := f.Name.String()
+				scopedName := fmt.Sprintf("%s_%s", pkgName, name)
+				consts[scopedName] = lit.Value
+			}
+		}
+	}
+
+	return consts
 }
